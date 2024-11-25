@@ -12,10 +12,12 @@ public class TelaProfessor extends JFrame {
     private JTextField nomeField;
     private JTextField idadeField;
     private JTextField especialidadeField;
+    private JTextField idField;
     private JButton cadastrarButton;
     private JButton listarButton;
     private JButton excluirButton;
     private JButton gerarRelatorioButton;
+    private JButton voltarButton;
     private JTextArea outputArea;
 
     public TelaProfessor() {
@@ -48,24 +50,36 @@ public class TelaProfessor extends JFrame {
         especialidadeField.setBounds(120, 90, 200, 25);
         add(especialidadeField);
 
+        JLabel idLabel = new JLabel("ID:");
+        idLabel.setBounds(10, 130, 100, 25);
+        add(idLabel);
+
+        idField = new JTextField();
+        idField.setBounds(120, 130, 200,25);
+        add(idField);
+
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 130, 150, 25);
+        cadastrarButton.setBounds(10, 170, 150, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(180, 130, 150, 25);
+        listarButton.setBounds(180, 170, 150, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 170, 150, 25);
+        excluirButton.setBounds(10, 210, 150, 25);
         add(excluirButton);
 
         gerarRelatorioButton = new JButton("Gerar Relatório");
-        gerarRelatorioButton.setBounds(180, 170, 150, 25);
+        gerarRelatorioButton.setBounds(180, 210, 150, 25);
         add(gerarRelatorioButton);
 
+        voltarButton = new JButton("Voltar");
+        voltarButton.setBounds(350, 170, 150, 25);
+        add(voltarButton);
+
         outputArea = new JTextArea();
-        outputArea.setBounds(10, 210, 450, 200);
+        outputArea.setBounds(10, 250, 450, 160);
         outputArea.setEditable(false);
         add(outputArea);
 
@@ -77,7 +91,8 @@ public class TelaProfessor extends JFrame {
                     String nome = nomeField.getText();
                     int idade = Integer.parseInt(idadeField.getText());
                     String especialidade = especialidadeField.getText();
-                    Professor professor = new Professor(null, nome, idade, especialidade);
+                    long id = Long.parseLong(idField.getText());
+                    Professor professor = new Professor(id, nome, idade, especialidade);
                     ProfessorDAO dao = new ProfessorDAO();
                     dao.cadastrar(professor);
                     outputArea.setText("Professor cadastrado com sucesso!");
@@ -108,7 +123,7 @@ public class TelaProfessor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int id = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do professor a excluir:"));
+                    long id = Long.parseLong(JOptionPane.showInputDialog("Digite o ID do professor a excluir:"));
                     ProfessorDAO dao = new ProfessorDAO();
                     dao.excluir(id);
                     outputArea.setText("Professor excluído com sucesso!");
@@ -130,6 +145,8 @@ public class TelaProfessor extends JFrame {
                 }
             }
         });
+
+        voltarButton.addActionListener(e -> setVisible(false));
 
         setVisible(true);
     }

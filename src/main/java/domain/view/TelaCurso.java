@@ -17,6 +17,7 @@ public class TelaCurso extends JFrame {
     private JButton cadastrarButton;
     private JButton listarButton;
     private JButton excluirButton;
+    private JButton voltarButton;
     private JTextArea outputArea;
 
     public TelaCurso() {
@@ -60,6 +61,10 @@ public class TelaCurso extends JFrame {
         excluirButton = new JButton("Excluir");
         excluirButton.setBounds(10, 170, 150, 25);
         add(excluirButton);
+
+        voltarButton = new JButton("Voltar");
+        voltarButton.setBounds(180, 170, 150, 25);
+        add(voltarButton);
 
         outputArea = new JTextArea();
         outputArea.setBounds(10, 210, 350, 150);
@@ -114,5 +119,9 @@ public class TelaCurso extends JFrame {
                 }
             }
         });
+
+        voltarButton.addActionListener(e -> setVisible(false));
+
+        setVisible(true);
     }
 }
