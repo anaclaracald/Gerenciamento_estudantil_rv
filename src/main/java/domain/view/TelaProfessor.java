@@ -22,7 +22,7 @@ public class TelaProfessor extends JFrame {
 
     public TelaProfessor() {
         setTitle("Gerenciamento de Professores");
-        setSize(500, 500);
+        setSize(525, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 

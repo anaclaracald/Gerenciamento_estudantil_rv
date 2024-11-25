@@ -18,11 +18,12 @@ public class TelaCurso extends JFrame {
     private JButton listarButton;
     private JButton excluirButton;
     private JButton voltarButton;
+    private JButton vinculacaoButton;
     private JTextArea outputArea;
 
     public TelaCurso() {
         setTitle("Gerenciamento de Cursos");
-        setSize(400, 400);
+        setSize(525, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -63,8 +64,12 @@ public class TelaCurso extends JFrame {
         add(excluirButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(180, 170, 150, 25);
+        voltarButton.setBounds(350, 130, 150, 25);
         add(voltarButton);
+
+        vinculacaoButton = new JButton("Vinculação");
+        vinculacaoButton.setBounds(180, 170, 150, 25);
+        add(vinculacaoButton);
 
         outputArea = new JTextArea();
         outputArea.setBounds(10, 210, 350, 150);
@@ -121,6 +126,8 @@ public class TelaCurso extends JFrame {
         });
 
         voltarButton.addActionListener(e -> setVisible(false));
+
+        vinculacaoButton.addActionListener(e -> new TelaVinculacao());
 
         setVisible(true);
     }
