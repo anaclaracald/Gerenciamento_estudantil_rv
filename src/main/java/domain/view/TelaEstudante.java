@@ -64,6 +64,10 @@ public class TelaEstudante extends JFrame {
         outputArea.setEditable(false);
         add(outputArea);
 
+        JButton btnSair = new JButton("Sair");
+        btnSair.setBounds(150, 200, 100, 40);
+        add(btnSair);
+
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,5 +115,9 @@ public class TelaEstudante extends JFrame {
                 }
             }
         });
+
+        btnSair.addActionListener(e -> System.exit(0));
+
+        setVisible(true);
     }
 }

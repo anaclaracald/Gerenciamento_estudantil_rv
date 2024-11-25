@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CursoDAO {
     public void cadastrar(Curso curso) throws SQLException {
-        String sql = "INSERT INTO cursos (nomeCurso, cargaHoraria, professor_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO curso (nomeCurso, cargaHoraria, professor_id) VALUES (?, ?, ?)";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, curso.getNomeCurso());
@@ -23,7 +23,7 @@ public class CursoDAO {
     }
 
     public List<Curso> listarTodos() throws SQLException {
-        String sql = "SELECT c.id, c.nomeCurso, c.cargaHoraria, p.nome AS professor FROM cursos c JOIN professores p ON c.professor_id = p.id";
+        String sql = "SELECT c.id, c.nomeCurso, c.cargaHoraria, p.nome AS professor FROM curso c JOIN professor p ON c.professor_id = p.id";
         List<Curso> cursos = new ArrayList<>();
         try (Connection conn = DataBaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -43,7 +43,7 @@ public class CursoDAO {
 
 
     public void excluir(int id) throws SQLException {
-        String sql = "DELETE FROM cursos WHERE id = ?";
+        String sql = "DELETE FROM curso WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -52,7 +52,7 @@ public class CursoDAO {
     }
 
     public void atualizar(Curso curso) throws SQLException {
-        String sql = "UPDATE cursos SET nomeCurso = ?, cargaHoraria = ? WHERE id = ?";
+        String sql = "UPDATE curso SET nomeCurso = ?, cargaHoraria = ? WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, curso.getNomeCurso());
