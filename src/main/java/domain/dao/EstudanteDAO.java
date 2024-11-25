@@ -11,7 +11,7 @@ import java.util.List;
 
 public class EstudanteDAO {
     public void cadastrar(Estudante estudante) throws SQLException {
-        String sql = "INSERT INTO alunos (nome, idade, matricula) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO estudante (nome, idade, matricula) VALUES (?, ?, ?)";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, estudante.getNome());
@@ -22,7 +22,7 @@ public class EstudanteDAO {
     }
 
     public List<Estudante> listarTodos() throws SQLException {
-        String sql = "SELECT * FROM alunos";
+        String sql = "SELECT * FROM estudante";
         List<Estudante> alunos = new ArrayList<>();
         try (Connection conn = DataBaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -40,7 +40,7 @@ public class EstudanteDAO {
     }
 
     public void excluir(long matricula) throws SQLException {
-        String sql = "DELETE FROM alunos WHERE id = ?";
+        String sql = "DELETE FROM estudante WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, matricula);
@@ -49,7 +49,7 @@ public class EstudanteDAO {
     }
 
     public void atualizar(Estudante estudante) throws SQLException {
-        String sql = "UPDATE alunos SET nome = ?, idade = ? WHERE id = ?";
+        String sql = "UPDATE estudante SET nome = ?, idade = ? WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, estudante.getNome());

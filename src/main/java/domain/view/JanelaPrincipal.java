@@ -11,9 +11,9 @@ public class JanelaPrincipal extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
 
-        JButton btnAluno = new JButton("Gerenciar Alunos");
-        btnAluno.setBounds(100, 50, 200, 40);
-        add(btnAluno);
+        JButton btnEstudante = new JButton("Gerenciar Alunos");
+        btnEstudante.setBounds(100, 50, 200, 40);
+        add(btnEstudante);
 
         JButton btnProfessor = new JButton("Gerenciar Professores");
         btnProfessor.setBounds(100, 100, 200, 40);
@@ -27,7 +27,7 @@ public class JanelaPrincipal extends JFrame {
         btnSair.setBounds(150, 200, 100, 40);
         add(btnSair);
 
-        btnAluno.addActionListener(e -> new TelaEstudante());
+        btnEstudante.addActionListener(e -> new TelaEstudante());
         btnProfessor.addActionListener(e -> new TelaProfessor());
         btnCurso.addActionListener(e -> new TelaCurso());
         btnSair.addActionListener(e -> System.exit(0));
