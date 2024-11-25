@@ -44,11 +44,11 @@ public class ProfessorDAO {
         return professores;
     }
 
-    public void excluir(int id) throws SQLException {
+    public void excluir(Long id) throws SQLException {
         String sql = "DELETE FROM professor WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setLong(1, id);
             stmt.executeUpdate();
         }
     }

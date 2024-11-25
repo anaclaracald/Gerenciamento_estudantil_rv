@@ -15,6 +15,7 @@ public class TelaEstudante extends JFrame {
     private JButton cadastrarButton;
     private JButton listarButton;
     private JButton excluirButton;
+    private JButton voltarButton;
     private JTextArea outputArea;
 
     public TelaEstudante() {
@@ -59,14 +60,14 @@ public class TelaEstudante extends JFrame {
         excluirButton.setBounds(10, 170, 150, 25);
         add(excluirButton);
 
+        voltarButton = new JButton("Voltar");
+        voltarButton.setBounds(180, 170, 150, 25);
+        add(voltarButton);
+
         outputArea = new JTextArea();
         outputArea.setBounds(10, 210, 350, 150);
         outputArea.setEditable(false);
         add(outputArea);
-
-        JButton btnSair = new JButton("Sair");
-        btnSair.setBounds(150, 200, 100, 40);
-        add(btnSair);
 
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
@@ -116,7 +117,7 @@ public class TelaEstudante extends JFrame {
             }
         });
 
-        btnSair.addActionListener(e -> System.exit(0));
+        voltarButton.addActionListener(e -> setVisible(false));
 
         setVisible(true);
     }
