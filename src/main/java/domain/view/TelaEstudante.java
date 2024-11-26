@@ -6,6 +6,7 @@ import domain.model.Estudante;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 public class TelaEstudante extends JFrame {
@@ -20,7 +21,7 @@ public class TelaEstudante extends JFrame {
 
     public TelaEstudante() {
         setTitle("Gerenciamento de Estudantes");
-        setSize(400, 400);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -49,23 +50,23 @@ public class TelaEstudante extends JFrame {
         add(matriculaField);
 
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 130, 150, 25);
+        cadastrarButton.setBounds(10, 130, 200, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(180, 130, 150, 25);
+        listarButton.setBounds(180, 130, 200, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 170, 150, 25);
+        excluirButton.setBounds(10, 170, 200, 25);
         add(excluirButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(180, 170, 150, 25);
+        voltarButton.setBounds(180, 170, 200, 25);
         add(voltarButton);
 
         outputArea = new JTextArea();
-        outputArea.setBounds(10, 210, 350, 150);
+        outputArea.setBounds(10, 210, 450, 150);
         outputArea.setEditable(false);
         add(outputArea);
 
@@ -74,14 +75,27 @@ public class TelaEstudante extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String nome = nomeField.getText();
-                    int idade = Integer.parseInt(idadeField.getText());
-                    Long matricula = Long.parseLong(matriculaField.getText());
+                    String idadeText = idadeField.getText();
+                    String matriculaText = matriculaField.getText();
+                    
+                    if (nome.isEmpty() || idadeText.isEmpty() || matriculaText.isEmpty()) {
+                        throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
+                    }
+
+                    int idade = Integer.parseInt(idadeText);
+                    long matricula = Long.parseLong(matriculaText);
+
                     Estudante estudante = new Estudante(nome, idade, matricula);
                     EstudanteDAO dao = new EstudanteDAO();
                     dao.cadastrar(estudante);
+
                     outputArea.setText("Estudante cadastrado com sucesso!");
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao cadastrar estudante: " + ex.getMessage());
+                } catch (NumberFormatException ex) {
+                    outputArea.setText("Erro: Idade e Matrícula devem ser numéricos.");
+                } catch (IllegalArgumentException ex) {
+                    outputArea.setText("Erro: " + ex.getMessage());
+                } catch (SQLException ex) {
+                    outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
                 }
             }
         });
@@ -107,12 +121,22 @@ public class TelaEstudante extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Long matricula = Long.parseLong(JOptionPane.showInputDialog("Digite a matrícula do estudante a excluir:"));
+                    String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a excluir:");
+                    if (matriculaText == null || matriculaText.isEmpty()) {
+                        throw new IllegalArgumentException("Matrícula não informada.");
+                    }
+
+                    long matricula = Long.parseLong(matriculaText);
                     EstudanteDAO dao = new EstudanteDAO();
                     dao.excluir(matricula);
+
                     outputArea.setText("Estudante excluído com sucesso!");
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao excluir estudante: " + ex.getMessage());
+                } catch (NumberFormatException ex) {
+                    outputArea.setText("Erro: Matrícula deve ser numérica.");
+                } catch (IllegalArgumentException ex) {
+                    outputArea.setText("Erro: " + ex.getMessage());
+                } catch (SQLException ex) {
+                    outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
                 }
             }
         });
