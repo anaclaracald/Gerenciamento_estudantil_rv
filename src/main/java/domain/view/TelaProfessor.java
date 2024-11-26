@@ -22,7 +22,7 @@ public class TelaProfessor extends JFrame {
 
     public TelaProfessor() {
         setTitle("Gerenciamento de Professores");
-        setSize(500, 500);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -59,23 +59,23 @@ public class TelaProfessor extends JFrame {
         add(idField);
 
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 170, 150, 25);
+        cadastrarButton.setBounds(10, 170, 200, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(180, 170, 150, 25);
+        listarButton.setBounds(180, 170, 200, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 210, 150, 25);
+        excluirButton.setBounds(10, 210, 200, 25);
         add(excluirButton);
 
         gerarRelatorioButton = new JButton("Gerar Relatório");
-        gerarRelatorioButton.setBounds(180, 210, 150, 25);
+        gerarRelatorioButton.setBounds(180, 210, 200, 25);
         add(gerarRelatorioButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(350, 170, 150, 25);
+        voltarButton.setBounds(350, 170, 200, 25);
         add(voltarButton);
 
         outputArea = new JTextArea();
@@ -83,7 +83,7 @@ public class TelaProfessor extends JFrame {
         outputArea.setEditable(false);
         add(outputArea);
 
-        // Ações dos botões
+
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

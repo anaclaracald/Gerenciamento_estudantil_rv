@@ -4,6 +4,7 @@ import domain.dao.CursoDAO;
 import domain.dao.ProfessorDAO;
 import domain.model.Curso;
 import domain.model.Professor;
+import domain.util.RelatorioService;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -21,8 +22,9 @@ public class TelaCurso extends JFrame {
     private JTextArea outputArea;
 
     public TelaCurso() {
+        RelatorioService relatorioService = new RelatorioService();
         setTitle("Gerenciamento de Cursos");
-        setSize(400, 400);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -51,23 +53,23 @@ public class TelaCurso extends JFrame {
         add(idProfessorField);
 
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 130, 150, 25);
+        cadastrarButton.setBounds(10, 130, 200, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(180, 130, 150, 25);
+        listarButton.setBounds(180, 130, 200, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 170, 150, 25);
+        excluirButton.setBounds(10, 170, 200, 25);
         add(excluirButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(180, 170, 150, 25);
+        voltarButton.setBounds(180, 170, 200, 25);
         add(voltarButton);
 
         outputArea = new JTextArea();
-        outputArea.setBounds(10, 210, 350, 150);
+        outputArea.setBounds(10, 210, 450, 150);
         outputArea.setEditable(false);
         add(outputArea);
 
@@ -79,8 +81,8 @@ public class TelaCurso extends JFrame {
                     int cargaHoraria = Integer.parseInt(cargaHorariaField.getText());
                     Long idProfessor = Long.parseLong(idProfessorField.getText());
                     Professor professor = new ProfessorDAO().buscarPorId(idProfessor); // Busca o professor por ID
-                    Curso curso = new Curso(0, nomeCurso, cargaHoraria, professor.getNome());
-                    CursoDAO dao = new CursoDAO();
+                    Curso curso = new Curso(0, nomeCurso, cargaHoraria, professor.getId(), professor.getNome());
+                    CursoDAO dao = new CursoDAO(relatorioService);
                     dao.cadastrar(curso);
                     outputArea.setText("Curso cadastrado com sucesso!");
                 } catch (Exception ex) {
@@ -93,7 +95,7 @@ public class TelaCurso extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    CursoDAO dao = new CursoDAO();
+                    CursoDAO dao = new CursoDAO(relatorioService);
                     List<Curso> cursos = dao.listarTodos();
                     StringBuilder builder = new StringBuilder();
                     for (Curso curso : cursos) {
@@ -111,7 +113,8 @@ public class TelaCurso extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     int id = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do curso a excluir:"));
-                    CursoDAO dao = new CursoDAO();
+
+                    CursoDAO dao = new CursoDAO(relatorioService);
                     dao.excluir(id);
                     outputArea.setText("Curso excluído com sucesso!");
                 } catch (Exception ex) {

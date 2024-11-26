@@ -14,18 +14,27 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class ProfessorDAO {
 
-    public void cadastrar(Professor professor) throws SQLException {
-        String sql = "INSERT INTO professor (nome, idade, especialidade) VALUES (?, ?, ?)";
+    public void cadastrar(Professor professor) {
+        if (professor == null) {
+            throw new IllegalArgumentException("O professor não pode ser nulo.");
+        }
+
+        String sql = "INSERT INTO professor (id, nome, idade, especialidade) VALUES (?, ?, ?, ?)";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, professor.getNome());
-            stmt.setInt(2, professor.getIdade());
-            stmt.setString(3, professor.getEspecialidade());
+            stmt.setLong(1,professor.getId());
+            stmt.setString(2, professor.getNome());
+            stmt.setInt(3, professor.getIdade());
+            stmt.setString(4, professor.getEspecialidade());
             stmt.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new RuntimeException("Erro: Já existe um professor com o mesmo nome ou dados duplicados.", e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao cadastrar professor: " + e.getMessage(), e);
         }
     }
 
-    public List<Professor> listarTodos() throws SQLException {
+    public List<Professor> listarTodos() {
         String sql = "SELECT * FROM professor";
         List<Professor> professores = new ArrayList<>();
         try (Connection conn = DataBaseConnection.getConnection();
@@ -40,20 +49,35 @@ public class ProfessorDAO {
                 );
                 professores.add(professor);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar professores: " + e.getMessage(), e);
         }
         return professores;
     }
 
-    public void excluir(Long id) throws SQLException {
+    public void excluir(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID inválido para exclusão.");
+        }
+
         String sql = "DELETE FROM professor WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Nenhum professor encontrado com o ID fornecido.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao excluir professor: " + e.getMessage(), e);
         }
     }
 
-    public void atualizar(Professor professor) throws SQLException {
+    public void atualizar(Professor professor) {
+        if (professor == null || professor.getId() == null || professor.getId() <= 0) {
+            throw new IllegalArgumentException("Dados do professor inválidos para atualização.");
+        }
+
         String sql = "UPDATE professor SET nome = ?, idade = ?, especialidade = ? WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -61,12 +85,20 @@ public class ProfessorDAO {
             stmt.setInt(2, professor.getIdade());
             stmt.setString(3, professor.getEspecialidade());
             stmt.setLong(4, professor.getId());
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Nenhum professor encontrado com o ID fornecido para atualização.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar professor: " + e.getMessage(), e);
         }
     }
 
-    // Buscar por Nome
-    public List<Professor> buscarPorNome(String nome) throws SQLException {
+    public List<Professor> buscarPorNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome para busca não pode ser vazio.");
+        }
+
         String sql = "SELECT * FROM professor WHERE nome LIKE ?";
         List<Professor> professores = new ArrayList<>();
         try (Connection conn = DataBaseConnection.getConnection();
@@ -83,12 +115,17 @@ public class ProfessorDAO {
                     professores.add(professor);
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar professor pelo nome: " + e.getMessage(), e);
         }
         return professores;
     }
 
-    // Buscar por ID
-    public Professor buscarPorId(Long id) throws SQLException {
+    public Professor buscarPorId(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID inválido para busca.");
+        }
+
         String sql = "SELECT * FROM professor WHERE id = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -103,12 +140,13 @@ public class ProfessorDAO {
                     );
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar professor pelo ID: " + e.getMessage(), e);
         }
         return null; // Retorna null se o professor não for encontrado
     }
 
-    // Gerar Relatório
-    public void gerarRelatorio() throws Exception {
+    public void gerarRelatorio() {
         String sql = "SELECT * FROM professor";
         List<Professor> professores = listarTodos();
 
@@ -117,14 +155,12 @@ public class ProfessorDAO {
             PdfWriter.getInstance(document, fos);
             document.open();
 
-            // Adicionando título
             Font tituloFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
             Paragraph titulo = new Paragraph("Relatório de Professores", tituloFont);
             titulo.setAlignment(Element.ALIGN_CENTER);
             document.add(titulo);
             document.add(new Paragraph("\n"));
 
-            // Adicionando tabela
             PdfPTable table = new PdfPTable(4); // 4 colunas: ID, Nome, Idade, Especialidade
             table.addCell("ID");
             table.addCell("Nome");
@@ -139,6 +175,9 @@ public class ProfessorDAO {
             }
             document.add(table);
 
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao gerar relatório PDF: " + e.getMessage(), e);
+        } finally {
             document.close();
         }
     }

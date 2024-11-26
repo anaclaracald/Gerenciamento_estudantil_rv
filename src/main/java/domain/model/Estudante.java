@@ -17,7 +17,8 @@ public class Estudante extends Pessoa {
     }
 
     @Override
-    public void exibirDados() {
-        System.out.println("Nome: " + super.getNome() + ", Idade: " + super.getIdade() + ", Matrícula: " + this.getMatricula());
+    public String toString() {
+        return "Nome: " + super.getNome() + ", Idade: " + super.getIdade() + ", Matrícula: " + this.getMatricula();
     }
+
 }

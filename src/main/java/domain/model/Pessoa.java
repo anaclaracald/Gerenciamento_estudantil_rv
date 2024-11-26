@@ -30,5 +30,4 @@ public abstract class Pessoa {
         this.idade = idade;
     }
 
-    public abstract void exibirDados();
 }

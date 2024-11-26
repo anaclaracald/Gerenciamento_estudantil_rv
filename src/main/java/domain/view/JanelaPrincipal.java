@@ -11,7 +11,7 @@ public class JanelaPrincipal extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
 
-        JButton btnEstudante = new JButton("Gerenciar Alunos");
+        JButton btnEstudante = new JButton("Gerenciar Estudantes");
         btnEstudante.setBounds(100, 50, 200, 40);
         add(btnEstudante);
 
