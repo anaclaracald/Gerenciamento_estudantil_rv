@@ -96,6 +96,32 @@ Este projeto utiliza as seguintes tecnologias:
 ### JanelaPrincipal 
 - Interface Gráfica
 - Navegação intuitiva entre os menus utilizando **Swing**
+- ![Screenshot 2024-11-26 173420](https://github.com/user-attachments/assets/bb78da3d-9a66-4c41-8cb6-5dc178c42d6a)
+
+### Tela estudante
+- Operações CRUD
+- Geração de relatórios
+![Screenshot 2024-11-26 173443](https://github.com/user-attachments/assets/0b65c3b9-5d49-4319-9d37-2cba0f2178f4)
+
+  
+### Tela professor
+- Operações CRUD
+- Geração de relatórios
+![Screenshot 2024-11-26 173459](https://github.com/user-attachments/assets/cc15b5d1-3083-4acd-8046-ccef19454f89)
+
+  
+### Tela cursos
+- Operações CRUD
+- Tela de vinculação
+![Screenshot 2024-11-26 173514](https://github.com/user-attachments/assets/52490150-7d75-483a-854f-ac4502ed1ef8)
+
+
+
+#### Tela de vinculação
+- matrícula e desmatrícula
+![Screenshot 2024-11-26 173528](https://github.com/user-attachments/assets/7f1f4f98-abe7-4a91-8f59-5249e49e14f4)
+
+  
 
 ## Licença 
 
