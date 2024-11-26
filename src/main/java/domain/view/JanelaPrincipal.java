@@ -1,8 +1,6 @@
 package domain.view;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class JanelaPrincipal extends JFrame {
     public JanelaPrincipal() {

@@ -97,142 +97,124 @@ public class TelaProfessor extends JFrame {
         add(outputArea);
 
 
-        cadastrarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String nome = nomeField.getText();
-                    int idade = Integer.parseInt(idadeField.getText());
-                    String especialidade = especialidadeField.getText();
-                    long id = Long.parseLong(idField.getText());
-                    Professor professor = new Professor(id, nome, idade, especialidade);
-                    ProfessorDAO dao = new ProfessorDAO();
-                    dao.cadastrar(professor);
-                    outputArea.setText("Professor cadastrado com sucesso!");
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao cadastrar professor: " + ex.getMessage());
-                }
+        cadastrarButton.addActionListener(e -> {
+            try {
+                String nome = nomeField.getText();
+                int idade = Integer.parseInt(idadeField.getText());
+                String especialidade = especialidadeField.getText();
+                long id = Long.parseLong(idField.getText());
+                Professor professor = new Professor(id, nome, idade, especialidade);
+                ProfessorDAO dao = new ProfessorDAO();
+                dao.cadastrar(professor);
+                outputArea.setText("Professor cadastrado com sucesso!");
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao cadastrar professor: " + ex.getMessage());
             }
         });
 
-        listarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    ProfessorDAO dao = new ProfessorDAO();
-                    List<Professor> professores = dao.listarTodos();
-                    StringBuilder builder = new StringBuilder();
-                    for (Professor professor : professores) {
-                        builder.append(professor).append("\n");
-                    }
-                    outputArea.setText(builder.toString());
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao listar professores: " + ex.getMessage());
+        listarButton.addActionListener(e -> {
+            try {
+                ProfessorDAO dao = new ProfessorDAO();
+                List<Professor> professores = dao.listarTodos();
+                StringBuilder builder = new StringBuilder();
+                for (Professor professor : professores) {
+                    builder.append(professor).append("\n");
                 }
+                outputArea.setText(builder.toString());
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao listar professores: " + ex.getMessage());
             }
         });
 
-        excluirButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    long id = Long.parseLong(JOptionPane.showInputDialog("Digite o ID do professor a excluir:"));
-                    ProfessorDAO dao = new ProfessorDAO();
-                    dao.excluir(id);
-                    outputArea.setText("Professor excluído com sucesso!");
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao excluir professor: " + ex.getMessage());
-                }
+        excluirButton.addActionListener(e -> {
+            try {
+                long id = Long.parseLong(JOptionPane.showInputDialog("Digite o ID do professor a excluir:"));
+                ProfessorDAO dao = new ProfessorDAO();
+                dao.excluir(id);
+                outputArea.setText("Professor excluído com sucesso!");
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao excluir professor: " + ex.getMessage());
             }
         });
 
-        gerarRelatorioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    ProfessorDAO dao = new ProfessorDAO();
-                    String relatorio = dao.gerarRelatorio(); // Chama a função existente
-                    outputArea.setText(relatorio);
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
-                }
+        gerarRelatorioButton.addActionListener(e -> {
+            try {
+                ProfessorDAO dao = new ProfessorDAO();
+                String relatorio = dao.gerarRelatorio(); // Chama a função existente
+                outputArea.setText(relatorio);
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
             }
         });
 
-        atualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Solicita o ID do professor
-                    String idText = JOptionPane.showInputDialog("Digite o ID do professor a atualizar:");
-                    if (idText == null || idText.isEmpty()) {
-                        throw new IllegalArgumentException("ID não informado.");
-                    }
-                    long id = Long.parseLong(idText);
-
-                    // Solicita os novos dados para o professor
-                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome do professor:");
-                    if (novoNome == null || novoNome.isEmpty()) {
-                        throw new IllegalArgumentException("Nome não informado.");
-                    }
-
-                    String novaIdadeText = JOptionPane.showInputDialog("Digite a nova idade do professor:");
-                    if (novaIdadeText == null || novaIdadeText.isEmpty()) {
-                        throw new IllegalArgumentException("Idade não informada.");
-                    }
-
-                    int novaIdade = Integer.parseInt(novaIdadeText);
-                    String novaEspecialidade = JOptionPane.showInputDialog("Digite a nova especialidade do professor:");
-                    if (novaEspecialidade == null || novaEspecialidade.isEmpty()) {
-                        throw new IllegalArgumentException("Especialidade não informada.");
-                    }
-
-                    // Cria o objeto Professor com os dados atualizados
-                    Professor professor = new Professor(id, novoNome, novaIdade, novaEspecialidade);
-
-                    // Atualiza no banco de dados
-                    ProfessorDAO dao = new ProfessorDAO();
-                    dao.atualizar(professor);
-
-                    outputArea.setText("Professor atualizado com sucesso!");
-                } catch (NumberFormatException ex) {
-                    outputArea.setText("Erro: ID e idade devem ser numéricos.");
-                } catch (IllegalArgumentException ex) {
-                    outputArea.setText("Erro: " + ex.getMessage());
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao atualizar professor: " + ex.getMessage());
+        atualizarButton.addActionListener(e -> {
+            try {
+                // Solicita o ID do professor
+                String idText = JOptionPane.showInputDialog("Digite o ID do professor a atualizar:");
+                if (idText == null || idText.isEmpty()) {
+                    throw new IllegalArgumentException("ID não informado.");
                 }
+                long id = Long.parseLong(idText);
+
+                // Solicita os novos dados para o professor
+                String novoNome = JOptionPane.showInputDialog("Digite o novo nome do professor:");
+                if (novoNome == null || novoNome.isEmpty()) {
+                    throw new IllegalArgumentException("Nome não informado.");
+                }
+
+                String novaIdadeText = JOptionPane.showInputDialog("Digite a nova idade do professor:");
+                if (novaIdadeText == null || novaIdadeText.isEmpty()) {
+                    throw new IllegalArgumentException("Idade não informada.");
+                }
+
+                int novaIdade = Integer.parseInt(novaIdadeText);
+                String novaEspecialidade = JOptionPane.showInputDialog("Digite a nova especialidade do professor:");
+                if (novaEspecialidade == null || novaEspecialidade.isEmpty()) {
+                    throw new IllegalArgumentException("Especialidade não informada.");
+                }
+
+                // Cria o objeto Professor com os dados atualizados
+                Professor professor = new Professor(id, novoNome, novaIdade, novaEspecialidade);
+
+                // Atualiza no banco de dados
+                ProfessorDAO dao = new ProfessorDAO();
+                dao.atualizar(professor);
+
+                outputArea.setText("Professor atualizado com sucesso!");
+            } catch (NumberFormatException ex) {
+                outputArea.setText("Erro: ID e idade devem ser numéricos.");
+            } catch (IllegalArgumentException ex) {
+                outputArea.setText("Erro: " + ex.getMessage());
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao atualizar professor: " + ex.getMessage());
             }
         });
 
 
-        consultarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Buscar e printar informações do professor
-                    String idText = JOptionPane.showInputDialog("Digite o ID do professor a consultar:");
-                    Long id = Long.parseLong(idText);
-                    ProfessorDAO professorDAO = new ProfessorDAO();
-                    Professor professor = professorDAO.consultarProfessor(id);
+        consultarButton.addActionListener(e -> {
+            try {
+                // Buscar e printar informações do professor
+                String idText = JOptionPane.showInputDialog("Digite o ID do professor a consultar:");
+                Long id = Long.parseLong(idText);
+                ProfessorDAO professorDAO = new ProfessorDAO();
+                Professor professor = professorDAO.consultarProfessor(id);
 
-                    if (professor != null) {
-                        String mensagem = String.format(
-                                "ID: %d\nNome: %s\nIdade: %d\nEspecialidade: %s",
-                                professor.getId(),
-                                professor.getNome(),
-                                professor.getIdade(),
-                                professor.getEspecialidade()
-                        );
-                        outputArea.setText(mensagem);
-                    } else {
-                        outputArea.setText("");
-                        JOptionPane.showMessageDialog(null, "Nenhum professor encontrado com o ID informado.", "Erro", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao consultar professor: " + ex.getMessage());
+                if (professor != null) {
+                    String mensagem = String.format(
+                            "ID: %d\nNome: %s\nIdade: %d\nEspecialidade: %s",
+                            professor.getId(),
+                            professor.getNome(),
+                            professor.getIdade(),
+                            professor.getEspecialidade()
+                    );
+                    outputArea.setText(mensagem);
+                } else {
+                    outputArea.setText("");
+                    JOptionPane.showMessageDialog(null, "Nenhum professor encontrado com o ID informado.", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
+
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao consultar professor: " + ex.getMessage());
             }
         });
 

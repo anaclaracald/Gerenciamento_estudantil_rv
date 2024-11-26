@@ -1,19 +1,15 @@
 package domain.dao;
 
 import domain.model.Curso;
+import domain.model.Estudante;
 import domain.util.DataBaseConnection;
-import domain.util.RelatorioService;
+
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CursoDAO {
-    private final RelatorioService relatorioService;
-
-    public CursoDAO(RelatorioService relatorioService) {
-        this.relatorioService = relatorioService;
-    }
 
     public void cadastrar(Curso curso) {
         if (!isValidId(curso.getId())) {
@@ -29,7 +25,7 @@ public class CursoDAO {
             stmt.setLong(4, curso.getProfessorId());
             stmt.execute();
 
-            relatorioService.adicionarCurso(curso); // Adiciona ao relatório
+
             System.out.println("Curso cadastrado e adicionado ao relatório com sucesso!");
         } catch (SQLException e) {
             throw  new RuntimeException("Erro ao cadastrar o curso: " + e.getMessage());
@@ -55,7 +51,6 @@ public class CursoDAO {
                         rs.getString("professor_nome")
                 );
                 cursos.add(curso);
-                relatorioService.adicionarCurso(curso); // Atualiza o relatório com os dados do banco
             }
         } catch (SQLException e) {
             throw  new RuntimeException("Erro ao listar cursos do banco: " + e.getMessage());
@@ -75,7 +70,6 @@ public class CursoDAO {
             stmt.setLong(1, id);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                relatorioService.getCursos().removeIf(curso -> curso.getId() == id); // Remove do relatório
                 System.out.println("Curso excluído com sucesso!");
             } else {
                 System.out.println("Nenhum curso encontrado com o ID especificado.");
@@ -90,7 +84,7 @@ public class CursoDAO {
             System.out.println("Erro: O ID do curso deve conter exatamente 4 dígitos.");
             return;
         }
-        String sql = "UPDATE curso SET nomeCurso = ?, cargaHoraria = ?, professor_id = ? WHERE id = ?";
+        String sql = "UPDATE curso SET nome = ?, carga_horaria = ?, professor_id = ? WHERE id = ?";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, curso.getNomeCurso());
@@ -99,8 +93,6 @@ public class CursoDAO {
             stmt.setLong(4, curso.getId());
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                relatorioService.getCursos().removeIf(c -> c.getId() == curso.getId()); // Remove curso antigo
-                relatorioService.adicionarCurso(curso); // Atualiza com novo curso
                 System.out.println("Curso atualizado com sucesso!");
             } else {
                 System.out.println("Nenhum curso encontrado com o ID especificado.");

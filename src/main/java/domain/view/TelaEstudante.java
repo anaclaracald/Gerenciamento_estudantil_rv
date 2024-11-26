@@ -85,154 +85,134 @@ public class TelaEstudante extends JFrame {
         outputArea.setEditable(false);
         add(outputArea);
 
-        cadastrarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String nome = nomeField.getText();
-                    String idadeText = idadeField.getText();
-                    String matriculaText = matriculaField.getText();
+        cadastrarButton.addActionListener(e -> {
+            try {
+                String nome = nomeField.getText();
+                String idadeText = idadeField.getText();
+                String matriculaText = matriculaField.getText();
 
-                    if (nome.isEmpty() || idadeText.isEmpty() || matriculaText.isEmpty()) {
-                        throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
-                    }
-
-                    int idade = Integer.parseInt(idadeText);
-                    long matricula = Long.parseLong(matriculaText);
-
-                    Estudante estudante = new Estudante(nome, idade, matricula);
-                    EstudanteDAO dao = new EstudanteDAO();
-                    dao.cadastrar(estudante);
-
-                    outputArea.setText("Estudante cadastrado com sucesso!");
-                } catch (NumberFormatException ex) {
-                    outputArea.setText("Erro: Idade e Matrícula devem ser numéricos.");
-                } catch (IllegalArgumentException ex) {
-                    outputArea.setText("Erro: " + ex.getMessage());
-                } catch (SQLException ex) {
-                    outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
+                if (nome.isEmpty() || idadeText.isEmpty() || matriculaText.isEmpty()) {
+                    throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
                 }
+
+                int idade = Integer.parseInt(idadeText);
+                long matricula = Long.parseLong(matriculaText);
+
+                Estudante estudante = new Estudante(nome, idade, matricula);
+                EstudanteDAO dao = new EstudanteDAO();
+                dao.cadastrar(estudante);
+
+                outputArea.setText("Estudante cadastrado com sucesso!");
+            } catch (NumberFormatException ex) {
+                outputArea.setText("Erro: Idade e Matrícula devem ser numéricos.");
+            } catch (IllegalArgumentException ex) {
+                outputArea.setText("Erro: " + ex.getMessage());
+            } catch (SQLException ex) {
+                outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
             }
         });
 
-        listarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    EstudanteDAO dao = new EstudanteDAO();
-                    List<Estudante> estudantes = dao.listarTodos();
-                    StringBuilder builder = new StringBuilder();
-                    for (Estudante estudante : estudantes) {
-                        builder.append(estudante).append("\n");
-                    }
-                    outputArea.setText(builder.toString());
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao listar estudantes: " + ex.getMessage());
+        listarButton.addActionListener(e -> {
+            try {
+                EstudanteDAO dao = new EstudanteDAO();
+                List<Estudante> estudantes = dao.listarTodos();
+                StringBuilder builder = new StringBuilder();
+                for (Estudante estudante : estudantes) {
+                    builder.append(estudante).append("\n");
                 }
+                outputArea.setText(builder.toString());
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao listar estudantes: " + ex.getMessage());
             }
         });
 
-        gerarRelatorioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    EstudanteDAO dao = new EstudanteDAO();
-                    String relatorio = dao.gerarRelatorio(); // Chama a função existente
-                    outputArea.setText(relatorio);
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
-                }
+        gerarRelatorioButton.addActionListener(e -> {
+            try {
+                EstudanteDAO dao = new EstudanteDAO();
+                String relatorio = dao.gerarRelatorio(); // Chama a função existente
+                outputArea.setText(relatorio);
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
             }
         });
 
-        excluirButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a excluir:");
-                    if (matriculaText == null || matriculaText.isEmpty()) {
-                        throw new IllegalArgumentException("Matrícula não informada.");
-                    }
-
-                    long matricula = Long.parseLong(matriculaText);
-                    EstudanteDAO dao = new EstudanteDAO();
-                    dao.excluir(matricula);
-
-                    outputArea.setText("Estudante excluído com sucesso!");
-                } catch (NumberFormatException ex) {
-                    outputArea.setText("Erro: Matrícula deve ser numérica.");
-                } catch (IllegalArgumentException ex) {
-                    outputArea.setText("Erro: " + ex.getMessage());
-                } catch (SQLException ex) {
-                    outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
+        excluirButton.addActionListener(e -> {
+            try {
+                String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a excluir:");
+                if (matriculaText == null || matriculaText.isEmpty()) {
+                    throw new IllegalArgumentException("Matrícula não informada.");
                 }
+
+                long matricula = Long.parseLong(matriculaText);
+                EstudanteDAO dao = new EstudanteDAO();
+                dao.excluir(matricula);
+
+                outputArea.setText("Estudante excluído com sucesso!");
+            } catch (NumberFormatException ex) {
+                outputArea.setText("Erro: Matrícula deve ser numérica.");
+            } catch (IllegalArgumentException ex) {
+                outputArea.setText("Erro: " + ex.getMessage());
+            } catch (SQLException ex) {
+                outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
             }
         });
 
-        atualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Solicita a matrícula do estudante que será atualizado
-                    String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a atualizar:");
-                    if (matriculaText == null || matriculaText.isEmpty()) {
-                        throw new IllegalArgumentException("Matrícula não informada.");
-                    }
-
-                    long matricula = Long.parseLong(matriculaText);
-
-                    // Solicita os novos dados para o estudante
-                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome do estudante:");
-                    if (novoNome == null || novoNome.isEmpty()) {
-                        throw new IllegalArgumentException("Nome não informado.");
-                    }
-
-                    String novaIdadeText = JOptionPane.showInputDialog("Digite a nova idade do estudante:");
-                    if (novaIdadeText == null || novaIdadeText.isEmpty()) {
-                        throw new IllegalArgumentException("Idade não informada.");
-                    }
-
-                    int novaIdade = Integer.parseInt(novaIdadeText);
-
-                    // Cria o objeto estudante com os dados atualizados
-                    Estudante estudante = new Estudante(novoNome, novaIdade, matricula);
-
-                    // Atualiza no banco de dados
-                    EstudanteDAO dao = new EstudanteDAO();
-                    dao.atualizar(estudante);
-
-                    outputArea.setText("Estudante atualizado com sucesso!");
-                } catch (NumberFormatException ex) {
-                    outputArea.setText("Erro: Matrícula e idade devem ser numéricas.");
-                } catch (IllegalArgumentException ex) {
-                    outputArea.setText("Erro: " + ex.getMessage());
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao atualizar estudante: " + ex.getMessage());
+        atualizarButton.addActionListener(e -> {
+            try {
+                // Solicita a matrícula do estudante que será atualizado
+                String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a atualizar:");
+                if (matriculaText == null || matriculaText.isEmpty()) {
+                    throw new IllegalArgumentException("Matrícula não informada.");
                 }
+                long matricula = Long.parseLong(matriculaText);
+
+                // Solicita os novos dados para o estudante
+                String novoNome = JOptionPane.showInputDialog("Digite o novo nome do estudante:");
+                if (novoNome == null || novoNome.isEmpty()) {
+                    throw new IllegalArgumentException("Nome não informado.");
+                }
+
+                String novaIdadeText = JOptionPane.showInputDialog("Digite a nova idade do estudante:");
+                if (novaIdadeText == null || novaIdadeText.isEmpty()) {
+                    throw new IllegalArgumentException("Idade não informada.");
+                }
+                int novaIdade = Integer.parseInt(novaIdadeText);
+
+                // Cria o objeto estudante com os dados atualizados
+                Estudante estudante = new Estudante(novoNome, novaIdade, matricula);
+
+                // Atualiza no banco de dados
+                EstudanteDAO dao = new EstudanteDAO();
+                dao.atualizar(estudante);
+
+                outputArea.setText("Estudante atualizado com sucesso!");
+            } catch (NumberFormatException ex) {
+                outputArea.setText("Erro: Matrícula e idade devem ser numéricas.");
+            } catch (IllegalArgumentException ex) {
+                outputArea.setText("Erro: " + ex.getMessage());
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao atualizar estudante: " + ex.getMessage());
             }
         });
 
-        consultarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Buscar e printar informações do estudante
-                    String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a consultar:");
-                    long matricula = Long.parseLong(matriculaText);
-                    EstudanteDAO estudanteDAO = new EstudanteDAO();
-                    Estudante estudante = estudanteDAO.consultarEstudante(matricula);
+        consultarButton.addActionListener(e -> {
+            try {
+                // Buscar e printar informações do estudante
+                String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a consultar:");
+                long matricula = Long.parseLong(matriculaText);
+                EstudanteDAO estudanteDAO = new EstudanteDAO();
+                Estudante estudante = estudanteDAO.consultarEstudante(matricula);
 
-                    String mensagem = String.format(
-                            "Estudante encontrado:\nNome: %s\nIdade: %d\nMatrícula: %d",
-                            estudante.getNome(),
-                            estudante.getIdade(),
-                            estudante.getMatricula()
-                    );
-                    outputArea.setText(mensagem);
+                String mensagem = String.format(
+                        "Estudante encontrado:\nNome: %s\nIdade: %d\nMatrícula: %d",
+                        estudante.getNome(),
+                        estudante.getIdade(),
+                        estudante.getMatricula()
+                );
+                outputArea.setText(mensagem);
 
-                } catch (Exception ex) {
-                    outputArea.setText("Erro ao consultar estudante: " + ex.getMessage());
-                }
+            } catch (Exception ex) {
+                outputArea.setText("Erro ao consultar estudante: " + ex.getMessage());
             }
         });
 
