@@ -17,6 +17,7 @@ public class TelaEstudante extends JFrame {
     private JButton listarButton;
     private JButton excluirButton;
     private JButton voltarButton;
+    private JButton consultarButton;
     private JTextArea outputArea;
 
     public TelaEstudante() {
@@ -46,24 +47,28 @@ public class TelaEstudante extends JFrame {
         add(matriculaLabel);
 
         matriculaField = new JTextField();
-        matriculaField.setBounds(120, 90, 200, 25);
+        matriculaField.setBounds(120, 90, 150, 25);
         add(matriculaField);
 
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 130, 200, 25);
+        cadastrarButton.setBounds(10, 130, 150, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(180, 130, 200, 25);
+        listarButton.setBounds(180, 130, 150, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 170, 200, 25);
+        excluirButton.setBounds(10, 170, 150, 25);
         add(excluirButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(180, 170, 200, 25);
+        voltarButton.setBounds(180, 170, 150, 25);
         add(voltarButton);
+
+        consultarButton = new JButton("Consultar");
+        consultarButton.setBounds(350, 130, 150, 25);
+        add(consultarButton);
 
         outputArea = new JTextArea();
         outputArea.setBounds(10, 210, 450, 150);
@@ -137,6 +142,30 @@ public class TelaEstudante extends JFrame {
                     outputArea.setText("Erro: " + ex.getMessage());
                 } catch (SQLException ex) {
                     outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
+                }
+            }
+        });
+
+        consultarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Buscar e printar informações do estudante
+                    String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a consultar:");
+                    long matricula = Long.parseLong(matriculaText);
+                    EstudanteDAO estudanteDAO = new EstudanteDAO();
+                    Estudante estudante = estudanteDAO.consultarEstudante(matricula);
+
+                    String mensagem = String.format(
+                            "Estudante encontrado:\nNome: %s\nIdade: %d\nMatrícula: %d",
+                            estudante.getNome(),
+                            estudante.getIdade(),
+                            estudante.getMatricula()
+                    );
+                    outputArea.setText(mensagem);
+
+                } catch (Exception ex) {
+                    outputArea.setText("Erro ao consultar estudante: " + ex.getMessage());
                 }
             }
         });

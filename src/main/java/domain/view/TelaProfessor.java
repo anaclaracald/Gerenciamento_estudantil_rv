@@ -1,5 +1,6 @@
 package domain.view;
 
+import domain.dao.EstudanteDAO;
 import domain.dao.ProfessorDAO;
 import domain.model.Professor;
 
@@ -18,6 +19,7 @@ public class TelaProfessor extends JFrame {
     private JButton excluirButton;
     private JButton gerarRelatorioButton;
     private JButton voltarButton;
+    private JButton consultarButton;
     private JTextArea outputArea;
 
     public TelaProfessor() {
@@ -61,24 +63,28 @@ public class TelaProfessor extends JFrame {
         add(idField);
 
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 170, 200, 25);
+        cadastrarButton.setBounds(10, 170, 150, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(180, 170, 200, 25);
+        listarButton.setBounds(180, 170, 150, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 210, 200, 25);
+        excluirButton.setBounds(10, 210, 150, 25);
         add(excluirButton);
 
         gerarRelatorioButton = new JButton("Gerar Relatório");
-        gerarRelatorioButton.setBounds(180, 210, 200, 25);
+        gerarRelatorioButton.setBounds(180, 210, 150, 25);
         add(gerarRelatorioButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(350, 170, 200, 25);
+        voltarButton.setBounds(350, 210, 150, 25);
         add(voltarButton);
+
+        consultarButton = new JButton("Consultar");
+        consultarButton.setBounds(350, 170, 150, 25);
+        add(consultarButton);
 
         outputArea = new JTextArea();
         outputArea.setBounds(10, 250, 450, 160);
@@ -144,6 +150,36 @@ public class TelaProfessor extends JFrame {
                     outputArea.setText("Relatório gerado com sucesso!");
                 } catch (Exception ex) {
                     outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
+                }
+            }
+        });
+
+        consultarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Buscar e printar informações do professor
+                    String idText = JOptionPane.showInputDialog("Digite o ID do professor a consultar:");
+                    Long id = Long.parseLong(idText);
+                    ProfessorDAO professorDAO = new ProfessorDAO();
+                    Professor professor = professorDAO.consultarProfessor(id);
+
+                    if (professor != null) {
+                        String mensagem = String.format(
+                                "ID: %d\nNome: %s\nIdade: %d\nEspecialidade: %s",
+                                professor.getId(),
+                                professor.getNome(),
+                                professor.getIdade(),
+                                professor.getEspecialidade()
+                        );
+                        outputArea.setText(mensagem);
+                    } else {
+                        outputArea.setText("");
+                        JOptionPane.showMessageDialog(null, "Nenhum professor encontrado com o ID informado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } catch (Exception ex) {
+                    outputArea.setText("Erro ao consultar professor: " + ex.getMessage());
                 }
             }
         });

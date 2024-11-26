@@ -81,4 +81,25 @@ public class EstudanteDAO {
             throw new SQLException("Erro ao excluir o estudante. Verifique a matrícula fornecida.", e);
         }
     }
+
+    public Estudante consultarEstudante(long matricula) throws SQLException {
+        String sql = "SELECT * FROM estudante WHERE matricula = ?";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, matricula);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Estudante(
+                            rs.getString("nome"),
+                            rs.getInt("idade"),
+                            rs.getLong("matricula")
+                    );
+                } else {
+                    throw new SQLException("Estudante com matrícula " + matricula + " não encontrado.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao consultar o estudante. Verifique a matrícula e a conexão com o banco.", e);
+        }
+    }
 }
