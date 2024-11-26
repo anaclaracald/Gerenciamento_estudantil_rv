@@ -114,4 +114,30 @@ public class CursoDAO {
         String idStr = String.valueOf(id);
         return idStr.length() == 4;
     }
+
+    public Curso consultarCurso(long id) throws SQLException {
+        String sql = "SELECT c.id, c.nome, c.carga_horaria, c.professor_id, p.nome AS professor_nome " +
+                "FROM curso c " +
+                "LEFT JOIN professor p ON c.professor_id = p.id " +
+                "WHERE c.id = ?";
+
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Curso(
+                            rs.getLong("id"),
+                            rs.getString("nome"),
+                            rs.getInt("carga_horaria"),
+                            rs.getLong("professor_id"),
+                            rs.getString("professor_nome")
+                    );
+                } else {
+                    throw new SQLException("Nenhum curso encontrado com o ID fornecido.");
+                }
+            }
+        }
+    }
 }

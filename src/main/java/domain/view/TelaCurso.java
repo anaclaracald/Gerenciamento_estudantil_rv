@@ -1,6 +1,7 @@
 package domain.view;
 
 import domain.dao.CursoDAO;
+import domain.dao.EstudanteDAO;
 import domain.dao.ProfessorDAO;
 import domain.model.Curso;
 import domain.model.Professor;
@@ -21,6 +22,7 @@ public class TelaCurso extends JFrame {
     private JButton excluirButton;
     private JButton voltarButton;
     private JButton vinculacaoButton;
+    private JButton consultarButton;
     private JTextArea outputArea;
 
     public TelaCurso() {
@@ -64,24 +66,28 @@ public class TelaCurso extends JFrame {
         add(idProfessorField);
 
         cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setBounds(10, 170, 200, 25);
+        cadastrarButton.setBounds(10, 170, 150, 25);
         add(cadastrarButton);
 
         listarButton = new JButton("Listar");
-        listarButton.setBounds(220, 170, 200, 25);
+        listarButton.setBounds(180, 170, 150, 25);
         add(listarButton);
 
         excluirButton = new JButton("Excluir");
-        excluirButton.setBounds(10, 210, 200, 25);
+        excluirButton.setBounds(10, 210, 150, 25);
         add(excluirButton);
 
         vinculacaoButton = new JButton("Vinculação");
-        vinculacaoButton.setBounds(220, 210, 200, 25);
+        vinculacaoButton.setBounds(180, 210, 150, 25);
         add(vinculacaoButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(10, 250, 200, 25);
+        voltarButton.setBounds(10, 250, 150, 25);
         add(voltarButton);
+
+        consultarButton = new JButton("Consultar");
+        consultarButton.setBounds(180, 250, 150, 25);
+        add(consultarButton);
 
         outputArea = new JTextArea();
         outputArea.setBounds(10, 290, 450, 200);
@@ -142,6 +148,32 @@ public class TelaCurso extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new TelaVinculacao(); // Abrir a tela de vinculação
+            }
+        });
+
+        consultarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Buscar e printar informações do curso
+                    String idText = JOptionPane.showInputDialog("Digite o ID do curso a consultar:");
+                    long id = Long.parseLong(idText);
+                    CursoDAO cursoDAO = new CursoDAO(relatorioService);
+                    Curso curso = cursoDAO.consultarCurso(id);
+
+                    String mensagem = String.format(
+                            "Curso encontrado:\nID: %d\nNome: %s\nCarga Horária: %d horas\nProfessor: %s (ID: %d)",
+                            curso.getId(),
+                            curso.getNomeCurso(),
+                            curso.getCargaHoraria(),
+                            curso.getProfessorNome(),
+                            curso.getProfessorId()
+                    );
+                    outputArea.setText(mensagem);
+
+                } catch (Exception ex) {
+                    outputArea.setText("Erro ao consultar curso: " + ex.getMessage());
+                }
             }
         });
 

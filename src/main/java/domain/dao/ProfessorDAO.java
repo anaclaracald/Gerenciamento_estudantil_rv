@@ -181,4 +181,8 @@ public class ProfessorDAO {
             document.close();
         }
     }
+
+    public Professor consultarProfessor(Long id) {
+        return buscarPorId(id);
+    }
 }
