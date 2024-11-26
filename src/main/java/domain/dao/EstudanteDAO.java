@@ -64,6 +64,37 @@ public class EstudanteDAO {
         return alunos;
     }
 
+    public String gerarRelatorio() {
+        // SQL ajustado para refletir apenas as tabelas existentes
+        String sql = "SELECT matricula, nome FROM estudante";
+
+        StringBuilder relatorio = new StringBuilder();
+
+        // Cabeçalho do relatório
+        relatorio.append("Relatório de Estudantes\n");
+        relatorio.append("=========================\n\n");
+        relatorio.append(String.format("%-10s %-20s\n", "Matrícula", "Nome"));
+        relatorio.append("-------------------------------\n");
+
+        try (Connection connection = DataBaseConnection.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                long matricula = rs.getLong("matricula");
+                String nome = rs.getString("nome");
+
+                // Adiciona os dados do estudante ao relatório
+                relatorio.append(String.format("%-10d %-20s\n", matricula, nome));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao gerar relatório de estudantes: " + e.getMessage(), e);
+        }
+
+        return relatorio.toString();
+    }
+
     public void excluir(long matricula) throws SQLException {
         String sqlVerificar = "SELECT * FROM estudante WHERE matricula = ?";
         String sqlExcluir = "DELETE FROM estudante WHERE matricula = ?";

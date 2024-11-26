@@ -146,43 +146,52 @@ public class ProfessorDAO {
         return null; // Retorna null se o professor não for encontrado
     }
 
-    public void gerarRelatorio() {
-        String sql = "SELECT * FROM professor";
-        List<Professor> professores = listarTodos();
+    public String gerarRelatorio() {
+        String sql = "SELECT p.id AS professor_id, p.nome AS professor_nome, c.nome AS nome " +
+                "FROM professor p " +
+                "LEFT JOIN curso c ON p.id = c.professor_id";
 
-        Document document = new Document();
-        try (FileOutputStream fos = new FileOutputStream("Relatorio_Professores.pdf")) {
-            PdfWriter.getInstance(document, fos);
-            document.open();
+        StringBuilder relatorio = new StringBuilder();
 
-            Font tituloFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
-            Paragraph titulo = new Paragraph("Relatório de Professores", tituloFont);
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            document.add(titulo);
-            document.add(new Paragraph("\n"));
+        relatorio.append("Relatório de Professores\n");
+        relatorio.append("==========================\n\n");
+        relatorio.append(String.format("%-5s %-20s %-30s\n", "ID", "Professor", "Cursos"));
+        relatorio.append("-------------------------------------------------------------\n");
 
-            PdfPTable table = new PdfPTable(4); // 4 colunas: ID, Nome, Idade, Especialidade
-            table.addCell("ID");
-            table.addCell("Nome");
-            table.addCell("Idade");
-            table.addCell("Especialidade");
+        try (Connection connection = DataBaseConnection.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-            for (Professor professor : professores) {
-                table.addCell(String.valueOf(professor.getId()));
-                table.addCell(professor.getNome());
-                table.addCell(String.valueOf(professor.getIdade()));
-                table.addCell(professor.getEspecialidade());
+            long lastProfessorId = -1;
+            while (rs.next()) {
+                long professorId = rs.getLong("professor_id");
+                String professorNome = rs.getString("professor_nome");
+                String cursoNome = rs.getString("nome");
+
+                // Se for um novo professor, insere o cabeçalho
+                if (professorId != lastProfessorId) {
+                    relatorio.append(String.format("%-5s %-20s %-30s\n",
+                            professorId,
+                            professorNome,
+                            (cursoNome != null ? cursoNome : "Nenhum curso")));
+                    lastProfessorId = professorId;
+                } else {
+                    // Caso contrário, insere somente o curso como nova linha
+                    if (cursoNome != null) {
+                        relatorio.append(String.format("%-26s %-30s\n", "", cursoNome));
+                    }
+                }
             }
-            document.add(table);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao gerar relatório PDF: " + e.getMessage(), e);
-        } finally {
-            document.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao gerar relatório de professores: " + e.getMessage(), e);
         }
+
+        return relatorio.toString();
     }
 
     public Professor consultarProfessor(Long id) {
         return buscarPorId(id);
     }
 }
+

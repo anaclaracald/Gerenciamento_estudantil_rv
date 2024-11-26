@@ -146,8 +146,8 @@ public class TelaProfessor extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     ProfessorDAO dao = new ProfessorDAO();
-                    dao.gerarRelatorio(); // Chama a função existente
-                    outputArea.setText("Relatório gerado com sucesso!");
+                    String relatorio = dao.gerarRelatorio(); // Chama a função existente
+                    outputArea.setText(relatorio);
                 } catch (Exception ex) {
                     outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
                 }
