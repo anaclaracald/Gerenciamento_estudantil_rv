@@ -78,59 +78,5 @@ public class VinculacaoDAO {
         }
     }
 
-    public List<Curso> listarCursosDoEstudante(Long estudanteId) throws SQLException {
-        if (!estudanteExiste(estudanteId)) {
-            throw new SQLException("Estudante com ID " + estudanteId + " não encontrado.");
-        }
-
-        String sql = "SELECT c.id, c.nomeCurso, c.cargaHoraria " +
-                "FROM curso c " +
-                "JOIN estudante_curso ec ON c.id = ec.curso_id " +
-                "WHERE ec.estudante_id = ?";
-        List<Curso> cursos = new ArrayList<>();
-        try (Connection connection = DataBaseConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, estudanteId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Curso curso = new Curso(
-                        rs.getLong("id"),
-                        rs.getString("nomeCurso"),
-                        rs.getInt("cargaHoraria"),
-                        rs.getLong("professor_id"),
-                        rs.getString("professor_nome")
-                );
-                cursos.add(curso);
-            }
-        }
-        return cursos;
-    }
-
-    public List<Estudante> listarEstudantesDeCurso(Long cursoId) throws SQLException {
-        if (!cursoExiste(cursoId)) {
-            throw new SQLException("Curso com ID " + cursoId + " não encontrado.");
-        }
-
-        String sql = "SELECT e.id, e.nome, e.idade, e.matricula " +
-                "FROM estudante e " +
-                "JOIN estudante_curso ec ON e.id = ec.estudante_id " +
-                "WHERE ec.curso_id = ?";
-        List<Estudante> estudantes = new ArrayList<>();
-        try (Connection connection = DataBaseConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, cursoId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Estudante estudante = new Estudante(
-                        rs.getString("nome"),
-                        rs.getInt("idade"),
-                        rs.getLong("matricula")
-                );
-                estudantes.add(estudante);
-            }
-        }
-        return estudantes;
-    }
-
 
 }

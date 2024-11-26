@@ -1,6 +1,7 @@
 package domain.dao;
 
 import domain.model.Estudante;
+import domain.model.Professor;
 import domain.util.DataBaseConnection;
 
 import java.sql.*;
@@ -65,16 +66,22 @@ public class EstudanteDAO {
     }
 
     public String gerarRelatorio() {
-        // SQL ajustado para refletir apenas as tabelas existentes
-        String sql = "SELECT matricula, nome FROM estudante";
+        // SQL ajustado para incluir os cursos dos estudantes
+        String sql = """
+        SELECT e.matricula, e.nome, c.nome
+        FROM estudante e
+        LEFT JOIN vinculacao v ON e.matricula = v.estudante_id
+        LEFT JOIN curso c ON v.curso_id = c.id
+        ORDER BY e.matricula, c.nome
+    """;
 
         StringBuilder relatorio = new StringBuilder();
 
         // Cabeçalho do relatório
-        relatorio.append("Relatório de Estudantes\n");
-        relatorio.append("=========================\n\n");
-        relatorio.append(String.format("%-10s %-20s\n", "Matrícula", "Nome"));
-        relatorio.append("-------------------------------\n");
+        relatorio.append("Relatório de Estudantes e Cursos\n");
+        relatorio.append("=================================\n\n");
+        relatorio.append(String.format("%-10s %-20s %-30s\n", "Matrícula", "Nome", "Curso"));
+        relatorio.append("------------------------------------------------------------\n");
 
         try (Connection connection = DataBaseConnection.getConnection();
              Statement stmt = connection.createStatement();
@@ -83,9 +90,15 @@ public class EstudanteDAO {
             while (rs.next()) {
                 long matricula = rs.getLong("matricula");
                 String nome = rs.getString("nome");
+                String nomeCurso = rs.getString("c.nome");
 
-                // Adiciona os dados do estudante ao relatório
-                relatorio.append(String.format("%-10d %-20s\n", matricula, nome));
+                // Caso o estudante não esteja matriculado em nenhum curso
+                if (nomeCurso == null) {
+                    nomeCurso = "Nenhum curso";
+                }
+
+                // Adiciona os dados ao relatório
+                relatorio.append(String.format("%-10d %-20s %-30s\n", matricula, nome, nomeCurso));
             }
 
         } catch (SQLException e) {
@@ -93,6 +106,26 @@ public class EstudanteDAO {
         }
 
         return relatorio.toString();
+    }
+
+    public void atualizar(Estudante estudante) {
+        if (estudante == null || estudante.getMatricula() == null || estudante.getMatricula() <= 0) {
+            throw new IllegalArgumentException("Dados do estudante inválidos para atualização.");
+        }
+
+        String sql = "UPDATE estudante SET nome = ?, idade = ? WHERE matricula = ?";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, estudante.getNome());
+            stmt.setInt(2, estudante.getIdade());
+            stmt.setLong(3, estudante.getMatricula());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Nenhum estudante encontrado com a matricula fornecida para atualização.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar estudante: " + e.getMessage(), e);
+        }
     }
 
     public void excluir(long matricula) throws SQLException {

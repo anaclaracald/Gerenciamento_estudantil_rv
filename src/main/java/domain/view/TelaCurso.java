@@ -82,15 +82,15 @@ public class TelaCurso extends JFrame {
         add(vinculacaoButton);
 
         voltarButton = new JButton("Voltar");
-        voltarButton.setBounds(10, 250, 150, 25);
+        voltarButton.setBounds(350, 210, 150, 25);
         add(voltarButton);
 
         consultarButton = new JButton("Consultar");
-        consultarButton.setBounds(180, 250, 150, 25);
+        consultarButton.setBounds(350, 170, 150, 25);
         add(consultarButton);
 
         outputArea = new JTextArea();
-        outputArea.setBounds(10, 290, 450, 200);
+        outputArea.setBounds(10, 290, 550, 300);
         outputArea.setEditable(false);
         add(outputArea);
 

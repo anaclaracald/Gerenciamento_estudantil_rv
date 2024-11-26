@@ -24,7 +24,7 @@ public class TelaEstudante extends JFrame {
 
     public TelaEstudante() {
         setTitle("Gerenciamento de Estudantes");
-        setSize(600, 600);
+        setSize(750, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
@@ -61,8 +61,12 @@ public class TelaEstudante extends JFrame {
         add(listarButton);
 
         gerarRelatorioButton = new JButton("Gerar Relatório");
-        gerarRelatorioButton.setBounds(180, 210, 200, 25);
+        gerarRelatorioButton.setBounds(510, 130, 150, 25);
         add(gerarRelatorioButton);
+
+        JButton atualizarButton = new JButton("Atualizar");
+        atualizarButton.setBounds(350, 170, 150, 25);
+        add(atualizarButton);
 
         excluirButton = new JButton("Excluir");
         excluirButton.setBounds(10, 170, 150, 25);
@@ -77,7 +81,7 @@ public class TelaEstudante extends JFrame {
         add(consultarButton);
 
         outputArea = new JTextArea();
-        outputArea.setBounds(10, 210, 450, 150);
+        outputArea.setBounds(10, 210, 550, 300);
         outputArea.setEditable(false);
         add(outputArea);
 
@@ -161,6 +165,49 @@ public class TelaEstudante extends JFrame {
                     outputArea.setText("Erro: " + ex.getMessage());
                 } catch (SQLException ex) {
                     outputArea.setText("Erro ao acessar o banco de dados: " + ex.getMessage());
+                }
+            }
+        });
+
+        atualizarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Solicita a matrícula do estudante que será atualizado
+                    String matriculaText = JOptionPane.showInputDialog("Digite a matrícula do estudante a atualizar:");
+                    if (matriculaText == null || matriculaText.isEmpty()) {
+                        throw new IllegalArgumentException("Matrícula não informada.");
+                    }
+
+                    long matricula = Long.parseLong(matriculaText);
+
+                    // Solicita os novos dados para o estudante
+                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome do estudante:");
+                    if (novoNome == null || novoNome.isEmpty()) {
+                        throw new IllegalArgumentException("Nome não informado.");
+                    }
+
+                    String novaIdadeText = JOptionPane.showInputDialog("Digite a nova idade do estudante:");
+                    if (novaIdadeText == null || novaIdadeText.isEmpty()) {
+                        throw new IllegalArgumentException("Idade não informada.");
+                    }
+
+                    int novaIdade = Integer.parseInt(novaIdadeText);
+
+                    // Cria o objeto estudante com os dados atualizados
+                    Estudante estudante = new Estudante(novoNome, novaIdade, matricula);
+
+                    // Atualiza no banco de dados
+                    EstudanteDAO dao = new EstudanteDAO();
+                    dao.atualizar(estudante);
+
+                    outputArea.setText("Estudante atualizado com sucesso!");
+                } catch (NumberFormatException ex) {
+                    outputArea.setText("Erro: Matrícula e idade devem ser numéricas.");
+                } catch (IllegalArgumentException ex) {
+                    outputArea.setText("Erro: " + ex.getMessage());
+                } catch (Exception ex) {
+                    outputArea.setText("Erro ao atualizar estudante: " + ex.getMessage());
                 }
             }
         });

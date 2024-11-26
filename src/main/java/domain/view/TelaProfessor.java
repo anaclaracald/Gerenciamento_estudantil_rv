@@ -2,6 +2,7 @@ package domain.view;
 
 import domain.dao.EstudanteDAO;
 import domain.dao.ProfessorDAO;
+import domain.model.Estudante;
 import domain.model.Professor;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ public class TelaProfessor extends JFrame {
     public TelaProfessor() {
         setTitle("Gerenciamento de Professores");
 
-        setSize(600, 600);
+        setSize(750, 600);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -86,8 +87,12 @@ public class TelaProfessor extends JFrame {
         consultarButton.setBounds(350, 170, 150, 25);
         add(consultarButton);
 
+        JButton atualizarButton = new JButton("Atualizar");
+        atualizarButton.setBounds(510, 170, 150, 25);
+        add(atualizarButton);
+
         outputArea = new JTextArea();
-        outputArea.setBounds(10, 250, 450, 160);
+        outputArea.setBounds(10, 250, 550, 300);
         outputArea.setEditable(false);
         add(outputArea);
 
@@ -153,6 +158,53 @@ public class TelaProfessor extends JFrame {
                 }
             }
         });
+
+        atualizarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Solicita o ID do professor
+                    String idText = JOptionPane.showInputDialog("Digite o ID do professor a atualizar:");
+                    if (idText == null || idText.isEmpty()) {
+                        throw new IllegalArgumentException("ID não informado.");
+                    }
+                    long id = Long.parseLong(idText);
+
+                    // Solicita os novos dados para o professor
+                    String novoNome = JOptionPane.showInputDialog("Digite o novo nome do professor:");
+                    if (novoNome == null || novoNome.isEmpty()) {
+                        throw new IllegalArgumentException("Nome não informado.");
+                    }
+
+                    String novaIdadeText = JOptionPane.showInputDialog("Digite a nova idade do professor:");
+                    if (novaIdadeText == null || novaIdadeText.isEmpty()) {
+                        throw new IllegalArgumentException("Idade não informada.");
+                    }
+
+                    int novaIdade = Integer.parseInt(novaIdadeText);
+                    String novaEspecialidade = JOptionPane.showInputDialog("Digite a nova especialidade do professor:");
+                    if (novaEspecialidade == null || novaEspecialidade.isEmpty()) {
+                        throw new IllegalArgumentException("Especialidade não informada.");
+                    }
+
+                    // Cria o objeto Professor com os dados atualizados
+                    Professor professor = new Professor(id, novoNome, novaIdade, novaEspecialidade);
+
+                    // Atualiza no banco de dados
+                    ProfessorDAO dao = new ProfessorDAO();
+                    dao.atualizar(professor);
+
+                    outputArea.setText("Professor atualizado com sucesso!");
+                } catch (NumberFormatException ex) {
+                    outputArea.setText("Erro: ID e idade devem ser numéricos.");
+                } catch (IllegalArgumentException ex) {
+                    outputArea.setText("Erro: " + ex.getMessage());
+                } catch (Exception ex) {
+                    outputArea.setText("Erro ao atualizar professor: " + ex.getMessage());
+                }
+            }
+        });
+
 
         consultarButton.addActionListener(new ActionListener() {
             @Override
