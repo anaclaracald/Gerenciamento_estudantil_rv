@@ -12,7 +12,7 @@ public class VinculacaoDAO {
 
     // Verifica se um estudante existe
     private boolean estudanteExiste(Long estudanteId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM estudante WHERE id = ?";
+        String sql = "SELECT COUNT(*) FROM estudante WHERE matricula = ?";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, estudanteId);
@@ -46,7 +46,7 @@ public class VinculacaoDAO {
             throw new SQLException("Curso com ID " + cursoId + " não encontrado.");
         }
 
-        String sql = "INSERT INTO estudante_curso (estudante_id, curso_id) VALUES (?, ?)";
+        String sql = "INSERT INTO vinculacao (estudante_id, curso_id) VALUES (?, ?)";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, estudanteId);
@@ -64,7 +64,7 @@ public class VinculacaoDAO {
             throw new SQLException("Curso com ID " + cursoId + " não encontrado.");
         }
 
-        String sql = "DELETE FROM estudante_curso WHERE estudante_id = ? AND curso_id = ?";
+        String sql = "DELETE FROM vinculacao WHERE estudante_id = ? AND curso_id = ?";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, estudanteId);

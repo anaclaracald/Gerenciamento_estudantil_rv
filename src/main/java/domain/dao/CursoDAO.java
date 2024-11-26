@@ -37,8 +37,9 @@ public class CursoDAO {
     }
 
     public List<Curso> listarTodos() {
-        String sql = "SELECT c.id, c.nome, c.carga_horaria, c.professor_id " +
-                "FROM curso c";
+        String sql = "SELECT c.id, c.nome, c.carga_horaria, c.professor_id, p.nome AS professor_nome " +
+                "FROM curso c " +
+                "LEFT JOIN professor p ON c.professor_id = p.id";
         List<Curso> cursos = new ArrayList<>();
 
         try (Connection connection = DataBaseConnection.getConnection();
@@ -109,7 +110,7 @@ public class CursoDAO {
         }
     }
 
-    private boolean isValidId(long id) {
+    private boolean isValidId(Long id) {
         String idStr = String.valueOf(id);
         return idStr.length() == 4;
     }

@@ -29,6 +29,6 @@ public class Professor extends Pessoa {
 
     @Override
     public String toString() {
-        return "Nome: " + super.getNome() + ", Idade: " + super.getIdade() + ", ID: " + this.getId() + "Especialidade" + this.getEspecialidade();
+        return "Nome: " + super.getNome() + ", Idade: " + super.getIdade() + ", ID: " + this.getId() + ", Especialidade:" + this.getEspecialidade();
     }
 }

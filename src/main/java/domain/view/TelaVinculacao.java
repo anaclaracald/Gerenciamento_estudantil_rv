@@ -54,12 +54,12 @@ public class TelaVinculacao extends JFrame {
         matricularEstButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Long matricula = Long.parseLong(JOptionPane.showInputDialog("Insira a matrícula do aluno que deseja matricular:"));
-                    Long idCurso = Long.parseLong(JOptionPane.showInputDialog("Insira o ID do curso:"));
+                    Long estudante_id = Long.parseLong(JOptionPane.showInputDialog("Insira a matrícula do aluno que deseja matricular:"));
+                    Long curso_id = Long.parseLong(JOptionPane.showInputDialog("Insira o ID do curso:"));
                     // Verificar se aluno e curso estão na DB
                     // Matricular
                     VinculacaoDAO dao = new VinculacaoDAO();
-                    dao.matricular(matricula, idCurso); // Chama a função existente
+                    dao.matricular(estudante_id, curso_id); // Chama a função existente
                     JOptionPane.showMessageDialog(null, "Estudante matriculado com sucesso.");
                 }
                 catch (SQLException ex) {
