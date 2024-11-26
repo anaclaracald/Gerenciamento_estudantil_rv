@@ -1,6 +1,7 @@
 package domain.view;
 
 import domain.dao.EstudanteDAO;
+import domain.dao.ProfessorDAO;
 import domain.model.Estudante;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ public class TelaEstudante extends JFrame {
     private JTextField matriculaField;
     private JButton cadastrarButton;
     private JButton listarButton;
+    private JButton gerarRelatorioButton;
     private JButton excluirButton;
     private JButton voltarButton;
     private JTextArea outputArea;
@@ -57,6 +59,10 @@ public class TelaEstudante extends JFrame {
         listarButton.setBounds(180, 130, 200, 25);
         add(listarButton);
 
+        gerarRelatorioButton = new JButton("Gerar Relatório");
+        gerarRelatorioButton.setBounds(180, 210, 200, 25);
+        add(gerarRelatorioButton);
+
         excluirButton = new JButton("Excluir");
         excluirButton.setBounds(10, 170, 200, 25);
         add(excluirButton);
@@ -77,7 +83,7 @@ public class TelaEstudante extends JFrame {
                     String nome = nomeField.getText();
                     String idadeText = idadeField.getText();
                     String matriculaText = matriculaField.getText();
-                    
+
                     if (nome.isEmpty() || idadeText.isEmpty() || matriculaText.isEmpty()) {
                         throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
                     }
@@ -113,6 +119,19 @@ public class TelaEstudante extends JFrame {
                     outputArea.setText(builder.toString());
                 } catch (Exception ex) {
                     outputArea.setText("Erro ao listar estudantes: " + ex.getMessage());
+                }
+            }
+        });
+
+        gerarRelatorioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    EstudanteDAO dao = new EstudanteDAO();
+                    String relatorio = dao.gerarRelatorio(); // Chama a função existente
+                    outputArea.setText(relatorio);
+                } catch (Exception ex) {
+                    outputArea.setText("Erro ao gerar relatório: " + ex.getMessage());
                 }
             }
         });
