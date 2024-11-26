@@ -66,7 +66,6 @@ Este projeto utiliza as seguintes tecnologias:
   - Idade
 - **Métodos:**
   - Getters e Setters
-  - `exibirDados()`
 
 ### Estudante
 - **Atributos:** 
@@ -84,7 +83,6 @@ Este projeto utiliza as seguintes tecnologias:
   - ID
 - **Métodos:**
   - Getters e Setters
-  - `exibirDados()`
 
 ### Curso
 - **Atributos:**
