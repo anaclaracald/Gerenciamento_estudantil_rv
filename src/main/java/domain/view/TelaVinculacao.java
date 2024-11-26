@@ -1,12 +1,15 @@
 package domain.view;
 
+import domain.dao.VinculacaoDAO;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 public class TelaVinculacao extends JFrame {
-    private JButton vincularProfButton;
+    private JButton desmatricularButton;
     private JButton matricularEstButton;
     private JButton voltarButton;
 
@@ -16,9 +19,9 @@ public class TelaVinculacao extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
-        vincularProfButton = new JButton("Vincular Professor");
-        vincularProfButton.setBounds(100, 50, 200, 40);
-        add(vincularProfButton);
+        desmatricularButton = new JButton("Desmatricular");
+        desmatricularButton.setBounds(100, 50, 200, 40);
+        add(desmatricularButton);
 
         matricularEstButton = new JButton("Matricular Aluno");
         matricularEstButton.setBounds(100, 100, 200, 40);
@@ -29,19 +32,20 @@ public class TelaVinculacao extends JFrame {
         add(voltarButton);
 
         // Ações dos botões
-        vincularProfButton.addActionListener(new ActionListener() {
+        desmatricularButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int idProf = Integer.parseInt(JOptionPane.showInputDialog("Insira o ID do professor que deseja vincular:"));
-                    int idCurso = Integer.parseInt(JOptionPane.showInputDialog("Insira o ID do curso:"));
+                    Long matricula = Long.parseLong(JOptionPane.showInputDialog("Insira a matrícula do aluno que deseja desmatricular:"));
+                    Long idCurso = Long.parseLong(JOptionPane.showInputDialog("Insira o ID do curso:"));
                     // Verificar se professor e curso estão na DB
                     // Vincular
+                    VinculacaoDAO dao = new VinculacaoDAO();
+                    dao.desmatricular(matricula, idCurso); // Chama a função existente
+                    JOptionPane.showMessageDialog(null, "Estudante desmatriculado com sucesso.");
                 }
-                catch (/*Se professor não estiver*/) {
-                    JOptionPane.showMessageDialog(null, "Professor não encontrado.");
-                }
-                catch (/*Se curso não estiver*/) {
-                    JOptionPane.showMessageDialog(null, "Curso não encontrado.");
+                catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Erro ao desmatricular: ");
+                    throw new RuntimeException(ex.getMessage());
                 }
 
             }
@@ -50,16 +54,17 @@ public class TelaVinculacao extends JFrame {
         matricularEstButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int matricula = Integer.parseInt(JOptionPane.showInputDialog("Insira a matrícula do aluno que deseja matricular:"));
-                    int idCurso = Integer.parseInt(JOptionPane.showInputDialog("Insira o ID do curso:"));
+                    Long matricula = Long.parseLong(JOptionPane.showInputDialog("Insira a matrícula do aluno que deseja matricular:"));
+                    Long idCurso = Long.parseLong(JOptionPane.showInputDialog("Insira o ID do curso:"));
                     // Verificar se aluno e curso estão na DB
                     // Matricular
+                    VinculacaoDAO dao = new VinculacaoDAO();
+                    dao.matricular(matricula, idCurso); // Chama a função existente
+                    JOptionPane.showMessageDialog(null, "Estudante matriculado com sucesso.");
                 }
-                catch (/*Se aluno não estiver*/) {
-                    JOptionPane.showMessageDialog(null, "Aluno não encontrado.");
-                }
-                catch (/*Se curso não estiver*/) {
-                    JOptionPane.showMessageDialog(null, "Curso não encontrado.");
+                catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Erro ao matricular aluno: ");
+                    throw new RuntimeException(ex.getMessage());
                 }
 
             }

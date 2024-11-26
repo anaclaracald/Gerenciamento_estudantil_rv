@@ -17,11 +17,10 @@ public class CursoDAO {
 
     public void cadastrar(Curso curso) {
         if (!isValidId(curso.getId())) {
-            System.out.println("Erro: O ID do curso deve conter exatamente 4 dígitos.");
-            return;
+            throw  new RuntimeException("Erro: O ID do curso deve conter exatamente 4 dígitos." + curso.getId());
         }
 
-        String sql = "INSERT INTO curso (id, nomeCurso, cargaHoraria, professor_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO curso (id, nome, carga_horaria, professor_id) VALUES (?, ?, ?, ?)";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, curso.getId());
@@ -33,12 +32,12 @@ public class CursoDAO {
             relatorioService.adicionarCurso(curso); // Adiciona ao relatório
             System.out.println("Curso cadastrado e adicionado ao relatório com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar o curso: " + e.getMessage());
+            throw  new RuntimeException("Erro ao cadastrar o curso: " + e.getMessage());
         }
     }
 
     public List<Curso> listarTodos() {
-        String sql = "SELECT c.id, c.nomeCurso, c.cargaHoraria, c.professor_id " +
+        String sql = "SELECT c.id, c.nome, c.carga_horaria, c.professor_id " +
                 "FROM curso c";
         List<Curso> cursos = new ArrayList<>();
 
@@ -49,8 +48,8 @@ public class CursoDAO {
             while (rs.next()) {
                 Curso curso = new Curso(
                         rs.getLong("id"),
-                        rs.getString("nomeCurso"),
-                        rs.getInt("cargaHoraria"),
+                        rs.getString("nome"),
+                        rs.getInt("carga_horaria"),
                         rs.getLong("professor_id"),
                         rs.getString("professor_nome")
                 );
@@ -58,7 +57,7 @@ public class CursoDAO {
                 relatorioService.adicionarCurso(curso); // Atualiza o relatório com os dados do banco
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao listar cursos do banco: " + e.getMessage());
+            throw  new RuntimeException("Erro ao listar cursos do banco: " + e.getMessage());
         }
 
         return cursos;
@@ -81,7 +80,7 @@ public class CursoDAO {
                 System.out.println("Nenhum curso encontrado com o ID especificado.");
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao excluir o curso: " + e.getMessage());
+            throw  new RuntimeException("Erro ao excluir o curso: " + e.getMessage());
         }
     }
 
@@ -106,7 +105,7 @@ public class CursoDAO {
                 System.out.println("Nenhum curso encontrado com o ID especificado.");
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar o curso: " + e.getMessage());
+            throw  new RuntimeException("Erro ao atualizar o curso: " + e.getMessage());
         }
     }
 

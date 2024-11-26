@@ -10,30 +10,79 @@ import java.util.List;
 
 public class VinculacaoDAO {
 
-    // Vincula um estudante a um curso
-    public void vincularEstudanteAoCurso(Long estudanteId, Long cursoId) throws SQLException {
+    // Verifica se um estudante existe
+    private boolean estudanteExiste(Long estudanteId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM estudante WHERE id = ?";
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, estudanteId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    // Verifica se um curso existe
+    private boolean cursoExiste(Long cursoId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM curso WHERE id = ?";
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, cursoId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    public void matricular(Long estudanteId, Long cursoId) throws SQLException {
+        if (!estudanteExiste(estudanteId)) {
+            throw new SQLException("Estudante com ID " + estudanteId + " não encontrado.");
+        }
+        if (!cursoExiste(cursoId)) {
+            throw new SQLException("Curso com ID " + cursoId + " não encontrado.");
+        }
+
         String sql = "INSERT INTO estudante_curso (estudante_id, curso_id) VALUES (?, ?)";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, estudanteId);
             stmt.setLong(2, cursoId);
             stmt.executeUpdate();
+            System.out.println("Estudante vinculado ao curso com sucesso.");
         }
     }
 
-    // Desvincula um estudante de um curso
-    public void desvincularEstudanteDoCurso(Long estudanteId, Long cursoId) throws SQLException {
+    public void desmatricular(Long estudanteId, Long cursoId) throws SQLException {
+        if (!estudanteExiste(estudanteId)) {
+            throw new SQLException("Estudante com ID " + estudanteId + " não encontrado.");
+        }
+        if (!cursoExiste(cursoId)) {
+            throw new SQLException("Curso com ID " + cursoId + " não encontrado.");
+        }
+
         String sql = "DELETE FROM estudante_curso WHERE estudante_id = ? AND curso_id = ?";
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, estudanteId);
             stmt.setLong(2, cursoId);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Estudante desvinculado do curso com sucesso.");
+            } else {
+                System.out.println("Nenhuma vinculação encontrada entre o estudante e o curso.");
+            }
         }
     }
 
-    // Lista todos os cursos de um estudante
-    public List<Curso> listarCursosDeEstudante(Long estudanteId) throws SQLException {
+    public List<Curso> listarCursosDoEstudante(Long estudanteId) throws SQLException {
+        if (!estudanteExiste(estudanteId)) {
+            throw new SQLException("Estudante com ID " + estudanteId + " não encontrado.");
+        }
+
         String sql = "SELECT c.id, c.nomeCurso, c.cargaHoraria " +
                 "FROM curso c " +
                 "JOIN estudante_curso ec ON c.id = ec.curso_id " +
@@ -57,9 +106,12 @@ public class VinculacaoDAO {
         return cursos;
     }
 
-    // Lista todos os estudantes de um curso
     public List<Estudante> listarEstudantesDeCurso(Long cursoId) throws SQLException {
-        String sql = "SELECT e.id, e.nome " +
+        if (!cursoExiste(cursoId)) {
+            throw new SQLException("Curso com ID " + cursoId + " não encontrado.");
+        }
+
+        String sql = "SELECT e.id, e.nome, e.idade, e.matricula " +
                 "FROM estudante e " +
                 "JOIN estudante_curso ec ON e.id = ec.estudante_id " +
                 "WHERE ec.curso_id = ?";
